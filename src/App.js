@@ -1,29 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import IncomeForm from './components/IncomeForm';
-import IncomeList from './components/IncomeList';
+import './App.css';
+import {motion} from 'framer-motion';
+import {useRef, useEffect, useState} from 'react';
+import images from "./images";
 
 function App() {
-	const [income, setIncome] = useState([]);
-	const [totalIncome, setTotalIncome] = useState(0);
 
-	useEffect(() => {
-		let temp = 0;
-		for(let i = 0; i < income.length; i++) {
-			temp += parseInt(income[i].price);
-		}
+  const [width, setWidth] = useState(0);
+  const carousel = useRef();
 
-		setTotalIncome(temp);
-	}, [income]);
-	
+  useEffect(() => {
+    setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+  }, []);
 
-	return (
-		<div className="App">
-			<Header totalIncome={totalIncome} />
-			<IncomeForm income={income} setIncome={setIncome} />
-			<IncomeList income={income} setIncome={setIncome} />
-		</div>
-	);
+  return (
+    <div className="App">
+      <motion.div ref={carousel} className="carousel" whileTap={{cursor: "grabbing"}}>
+        <motion.div 
+           drag="x" 
+           dragConstraints={{ right:0, left: -width}}
+           className="inner-carousel"
+          >
+           {images.map((image) => {
+            return (
+              <motion.div className="item">
+                <img src={image} alt=""/>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+      </motion.div>
+    </div>
+  );
 }
 
 export default App;
